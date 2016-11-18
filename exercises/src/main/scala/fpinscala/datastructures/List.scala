@@ -99,4 +99,35 @@ object List { // `List` companion object. Contains functions for creating and wo
   def mapViaFoldRight[A,B](l: List[A])(f: A => B): List[B] =
     foldRight(l, Nil: List[B])((a, bs) => Cons(f(a), bs))
 
+  def reverse[A](l: List[A]) =
+    foldLeft(l, Nil: List[A])((acc, a) => Cons(a, acc))
+
+  def foldRightViaReverse[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+    foldLeft(reverse(as), z)((acc, a) => f(a, acc))
+
+  def appendViaFoldRight[A](a1: List[A], a2: List[A]): List[A] =
+    foldRight(a1, a2)((a, acc) => Cons(a, acc))
+
+  def concat[A](ll: List[List[A]]): List[A] = ll match {
+    case Nil => Nil
+    case Cons(Nil, t) => concat(t)
+    case Cons(h, t) => append(h, concat(t))
+  }
+
+  def concatViaFoldRight[A](ll: List[List[A]]): List[A] =
+    foldRight(ll, Nil: List[A])(append)
+
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
+    case Nil => Nil
+    case Cons(h, t) if f(h) => Cons(h, filter(t)(f))
+    case Cons(_, t) => filter(t)(f)
+  }
+
+  def filterViaFoldRight[A](as: List[A])(f: A => Boolean): List[A] =
+    foldRight(as, Nil: List[A])((a, acc) => if (f(a)) Cons(a, acc) else acc)
+
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = as match {
+    case Nil => Nil
+    case Cons(h, t) => append(f(h), flatMap(t)(f))
+  }
 }

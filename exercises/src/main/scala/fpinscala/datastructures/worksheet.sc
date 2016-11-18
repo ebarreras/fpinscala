@@ -23,6 +23,12 @@ map(List(1, 2, 3, 4, 5))(_ + "a")
 
 mapViaFoldRight(List(1, 2, 3, 4, 5))(_ + "a")
 
+reverse(List(1, 2, 3, 4, 5))
+
+flatMap(List(1,2,3))(i => List(i,i))
+
+
+
 
 
 
