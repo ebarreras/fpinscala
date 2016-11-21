@@ -34,6 +34,10 @@ filterViaFlatMap(List(1, 2, 3, 4, 5))(_ % 2 == 0)
 addElems(List(1, 2, 3, 4, 5), List(1, 2, 3))
 addElems(List(1, 2, 3), List(1, 2, 3, 4, 5))
 
+hasSubsequence(List(8, 1, 2, 3, 4, 5), List(1, 2, 3))
+hasSubsequence(List(8, 1, 2, 6, 4, 5), List(1, 2, 3))
+
+
 
 
 
