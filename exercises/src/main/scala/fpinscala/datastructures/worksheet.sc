@@ -27,6 +27,13 @@ reverse(List(1, 2, 3, 4, 5))
 
 flatMap(List(1,2,3))(i => List(i,i))
 
+filter(List(1, 2, 3, 4, 5))(_ % 2 == 0)
+
+filterViaFlatMap(List(1, 2, 3, 4, 5))(_ % 2 == 0)
+
+addElems(List(1, 2, 3, 4, 5), List(1, 2, 3))
+addElems(List(1, 2, 3), List(1, 2, 3, 4, 5))
+
 
 
 
