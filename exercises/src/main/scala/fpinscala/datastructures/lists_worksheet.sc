@@ -1,6 +1,8 @@
 import fpinscala.datastructures._
 import fpinscala.datastructures.List._
 
+// lists
+
 val x = List(1,2,3,4,5) match {
   case Cons(x, Cons(2, Cons(4, _))) => x
   case Nil => 42
@@ -36,7 +38,6 @@ addElems(List(1, 2, 3), List(1, 2, 3, 4, 5))
 
 hasSubsequence(List(8, 1, 2, 3, 4, 5), List(1, 2, 3))
 hasSubsequence(List(8, 1, 2, 6, 4, 5), List(1, 2, 3))
-
 
 
 
