@@ -29,3 +29,6 @@ Either.sequence(List(Right(1), Right(2), Right(3), Right(4)))
 
 Either.traverse(List("1", "2", "hello", "4"))(s => Either.Try(s.toInt))
 Either.traverse(List("1", "2", "3", "4"))(s => Either.Try(s.toInt))
+
+Either.traverse_1(List("1", "2", "hello", "dog"))(s => Either.Try(s.toInt))
+Either.traverse_1(List("1", "2", "3", "4"))(s => Either.Try(s.toInt))
