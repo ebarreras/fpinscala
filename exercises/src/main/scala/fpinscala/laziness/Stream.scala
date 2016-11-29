@@ -17,11 +17,35 @@ trait Stream[+A] {
     case Empty => None
     case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
   }
-  def take(n: Int): Stream[A] = sys.error("todo")
 
-  def drop(n: Int): Stream[A] = sys.error("todo")
+  def take(n: Int): Stream[A] =
+    if (n <= 0) Empty
+    else this match {
+      case Empty => Empty
+      case Cons(h, t) => cons(h(), t().take(n - 1))
+    }
 
-  def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
+  def take_1(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 0 => cons(h(), t().take(n - 1))
+    case _ => Empty
+  }
+
+  def drop(n: Int): Stream[A] =
+    if (n <= 0) this
+    else this match {
+      case Empty => Empty
+      case Cons(_, t) => t().drop(n - 1)
+    }
+
+  def drop_1(n: Int): Stream[A] = this match {
+    case Cons(_, t) if n > 0 => t().drop(n - 1)
+    case _ => Empty
+  }
+
+  def takeWhile(p: A => Boolean): Stream[A] = this match {
+    case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
+    case _ => Empty
+  }
 
   def forAll(p: A => Boolean): Boolean = sys.error("todo")
 
@@ -31,6 +55,20 @@ trait Stream[+A] {
   // writing your own function signatures.
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
+
+  def toList_1: List[A] = this match {
+    case Empty => Nil
+    case Cons(h, t) => h() :: t().toList_1
+  }
+
+  def toList: List[A] = {
+    @annotation.tailrec
+    def go(rest: Stream[A], acc: List[A]): List[A] = rest match {
+      case Empty => acc
+      case Cons(h, t) => go(t(), h() :: acc)
+    }
+    go(this, Nil).reverse
+  }
 }
 case object Empty extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
