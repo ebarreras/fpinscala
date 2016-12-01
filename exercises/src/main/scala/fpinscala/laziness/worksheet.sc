@@ -42,3 +42,9 @@ s.append(Stream(5)).toList
 
 s.flatMap(x => Stream(x,x)).toList
 s.flatMapUsingAppend(x => Stream(x,x)).toList
+
+Stream.constant("a").take(5).toList
+
+Stream.from(7).take(5).toList
+
+Stream.fibs.take(10).toList

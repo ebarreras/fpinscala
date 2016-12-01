@@ -107,11 +107,23 @@ object Stream {
   def empty[A]: Stream[A] = Empty
 
   def apply[A](as: A*): Stream[A] =
-    if (as.isEmpty) empty 
+    if (as.isEmpty) empty
     else cons(as.head, apply(as.tail: _*))
 
   val ones: Stream[Int] = Stream.cons(1, ones)
-  def from(n: Int): Stream[Int] = sys.error("todo")
+
+  def constant[A](a: A): Stream[A] = {
+    lazy val s: Stream[A] = cons(a, s)
+    s
+  }
+
+  def from(n: Int): Stream[Int] =
+    cons(n, from(n + 1))
+
+  def fibs: Stream[Int] = {
+    def tail(l2: Int, l1: Int): Stream[Int] = cons(l2 + l1, tail(l1, l2 + l1))
+    cons(0, cons(1, tail(0, 1)))
+  }
 
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
 }
