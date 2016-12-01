@@ -24,3 +24,21 @@ s.take_1(6).toList
 
 s.takeWhile(_ < 3).toList
 s.takeWhile(_ > 3).toList
+s.takeWhileViaFoldRight(_ < 3).toList
+s.takeWhileViaFoldRight(_ > 3).toList
+
+s.forAll(_ > 0)
+s.forAll(_ > 3)
+
+s.headOption
+Stream().headOption
+
+s.map(_ + 1).toList
+s.filter(_ % 2 == 0).toList
+
+s.appendElem(5).toList
+
+s.append(Stream(5)).toList
+
+s.flatMap(x => Stream(x,x)).toList
+s.flatMapUsingAppend(x => Stream(x,x)).toList
