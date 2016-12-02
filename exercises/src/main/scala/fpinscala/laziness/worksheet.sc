@@ -21,11 +21,17 @@ s.take_1(2)
 s.take_1(2).toList
 s.take_1(4).toList
 s.take_1(6).toList
+s.takeViaUnfold(2)
+s.takeViaUnfold(2).toList
+s.takeViaUnfold(4).toList
+s.takeViaUnfold(6).toList
 
 s.takeWhile(_ < 3).toList
 s.takeWhile(_ > 3).toList
 s.takeWhileViaFoldRight(_ < 3).toList
 s.takeWhileViaFoldRight(_ > 3).toList
+s.takeWhileViaUnfold(_ < 3).toList
+s.takeWhileViaUnfold(_ > 3).toList
 
 s.forAll(_ > 0)
 s.forAll(_ > 3)
@@ -34,6 +40,8 @@ s.headOption
 Stream().headOption
 
 s.map(_ + 1).toList
+s.mapViaUnfold(_ + 1).toList
+
 s.filter(_ % 2 == 0).toList
 
 s.appendElem(5).toList
@@ -54,3 +62,14 @@ Stream.constantViaUnfold("a").take(5).toList
 Stream.fromViaUnfold(7).take(5).toList
 
 Stream.fibsViaUnfold.take(10).toList
+
+s.zip(s).toList
+
+val s1 = s.append(s)
+
+s.zipAll(s1).toList
+
+s1.startsWith(Empty)
+s1.startsWith(s)
+s.startsWith(s1)
+
