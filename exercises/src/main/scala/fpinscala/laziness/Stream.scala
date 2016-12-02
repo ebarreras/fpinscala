@@ -122,8 +122,22 @@ object Stream {
 
   def fibs: Stream[Int] = {
     def tail(l2: Int, l1: Int): Stream[Int] = cons(l2 + l1, tail(l1, l2 + l1))
+
     cons(0, cons(1, tail(0, 1)))
   }
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) map { case (a, s) => cons(a, unfold(s)(f)) } getOrElse empty[A]
+
+  def onesViaUnfold(): Stream[Int] =
+    unfold(())(_ => Some((1, ())))
+
+  def constantViaUnfold[A](a: A): Stream[A] =
+    unfold(a)(a => Some((a, a)))
+
+  def fibsViaUnfold: Stream[Int] =
+    unfold((0, 1)) { case (current, next) => Some((current, (next, current + next))) }
+
+  def fromViaUnfold(n: Int): Stream[Int] =
+    unfold(n)(n => Some((n, n + 1)))
 }

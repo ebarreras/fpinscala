@@ -48,3 +48,9 @@ Stream.constant("a").take(5).toList
 Stream.from(7).take(5).toList
 
 Stream.fibs.take(10).toList
+
+Stream.constantViaUnfold("a").take(5).toList
+
+Stream.fromViaUnfold(7).take(5).toList
+
+Stream.fibsViaUnfold.take(10).toList
