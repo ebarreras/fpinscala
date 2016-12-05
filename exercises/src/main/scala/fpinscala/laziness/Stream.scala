@@ -63,6 +63,12 @@ trait Stream[+A] {
       case _ => false
     }
 
+  def startsWith_1[B](s: Stream[B]): Boolean =
+    zipAll(s) takeWhile(_._2.isDefined) forAll {
+      case (Some(a), Some(b)) => a == b
+      case _ => false
+    }
+
   def toList_1: List[A] = this match {
     case Empty => Nil
     case Cons(h, t) => h() :: t().toList_1

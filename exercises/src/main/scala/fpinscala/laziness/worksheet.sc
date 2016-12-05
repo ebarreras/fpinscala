@@ -73,4 +73,11 @@ s1.startsWith(Empty)
 s1.startsWith(s)
 s.startsWith(s1)
 
+s1.startsWith_1(Empty)
+s1.startsWith_1(s)
+s.startsWith_1(s1)
+
 s.tails.map(_.toList).toList
+
+
+
