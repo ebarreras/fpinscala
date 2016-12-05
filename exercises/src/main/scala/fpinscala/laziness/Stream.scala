@@ -126,7 +126,14 @@ trait Stream[+A] {
       case (_, Cons(hb, tb)) => Some((None, Some(hb())), (Empty, tb()))
       case _ => None
     }
+
+  def tails: Stream[Stream[A]] =
+    unfold(this) {
+      case Empty => None
+      case s @ Cons(_, t) => Some(s, t())
+    } append Stream(empty)
 }
+
 case object Empty extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 
@@ -173,5 +180,4 @@ object Stream {
 
   def fromViaUnfold(n: Int): Stream[Int] =
     unfold(n)(n => Some((n, n + 1)))
-
 }
