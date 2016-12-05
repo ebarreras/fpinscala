@@ -9,7 +9,7 @@ trait Stream[+A] {
       case _ => z
     }
 
-  def exists(p: A => Boolean): Boolean = 
+  def exists(p: A => Boolean): Boolean =
     foldRight(false)((a, b) => p(a) || b) // Here `b` is the unevaluated recursive step that folds the tail of the stream. If `p(a)` returns `true`, `b` will never be evaluated and the computation terminates early.
 
   @annotation.tailrec
@@ -138,6 +138,15 @@ trait Stream[+A] {
       case Empty => None
       case s @ Cons(_, t) => Some(s, t())
     } append Stream(empty)
+
+  def scanRight[B](z: B)(f: (A, B) => B): Stream[B] = this match {
+    case Empty => Stream(z)
+    case Cons(h, t) => {
+      t().scanRight(z)(f) match {
+        case resultTail@Cons(rh, _) => cons(f(h(), rh()), resultTail)
+      }
+    }
+  }
 }
 
 case object Empty extends Stream[Nothing]

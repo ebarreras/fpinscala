@@ -79,5 +79,6 @@ s.startsWith_1(s1)
 
 s.tails.map(_.toList).toList
 
-
+Stream(1,2,3).scanRight(0)(_ + _).toList
+s.scanRight(0)(_ + _).toList
 
