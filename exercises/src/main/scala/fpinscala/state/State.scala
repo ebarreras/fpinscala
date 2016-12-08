@@ -105,12 +105,26 @@ object RNG {
 }
 
 case class State[S,+A](run: S => (A, S)) {
-  def map[B](f: A => B): State[S, B] =
-    sys.error("todo")
+  def map[B](f: A => B): State[S, B] = {
+    val self = this
+    State((s: S) => {
+      val (a, s2) = self.run(s)
+      (f(a), s2)
+    })
+  }
+
+  def mapViaFlatMap[B](f: A => B): State[S, B] = {
+    flatMap(a => State.unit(f(a)))
+  }
+
   def map2[B,C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
-    sys.error("todo")
+    flatMap(a => sb.map(b => f(a, b)))
+
   def flatMap[B](f: A => State[S, B]): State[S, B] =
-    sys.error("todo")
+    State(s => {
+      val (a, s2) = run(s)
+      f(a).run(s2)
+    })
 }
 
 sealed trait Input
@@ -121,5 +135,48 @@ case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object State {
   type Rand[A] = State[RNG, A]
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = State(
+    (m: Machine) => {
+      val finalState = compose(inputs.map(action))(m)
+      ((finalState.candies, finalState.coins), finalState)
+    })
+
+  def identity[S]: Transition[S] = (s: S) => s
+
+  def compose[S](ts: List[Transition[S]]): Transition[S] =
+    ts.foldLeft(identity[S])(_ andThen _)
+
+  def action(input: Input): Transition[Machine] = input match {
+    case Coin => coin
+    case Turn => turn
+  }
+
+  type Transition[S] = S => S
+
+  def turn: Machine => Machine =
+    (m: Machine) => m match {
+      case Machine(false, candies, coins) if candies > 0 => Machine(true, candies - 1, coins)
+      case _ => m
+    }
+
+  def coin: Machine => Machine =
+    (m: Machine) => m match {
+      case Machine(true, candies, coins) if candies > 0 => Machine(false, candies, coins + 1)
+      case _ => m
+    }
+
+  def unit[S, A](a: A): State[S, A] =
+    State(s => (a, s))
+
+  def sequence[S, A](fs: List[State[S, A]]): State[S, List[A]] =
+    fs.foldLeft(State((s: S) => (List[A](), s) ))((listState, state) => state.map2(listState)(_ :: _)) map (_.reverse)
+
+  def modify[S](f: S => S): State[S, Unit] = for {
+    s <- get // Gets the current state and assigns it to `s`.
+    _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
+  } yield ()
+
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 }
